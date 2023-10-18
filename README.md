@@ -51,7 +51,7 @@ jobs:
           github-token: ${{ secrets.GHPROJECT_SECRET }}
       # Update the status to "In Progress" when it currently is in "Todo"
       - uses: sorekz/update-project-fields@v1
-        if: ${{ steps.item-fields.outputs.STATUS == "Todo" }}
+        if: ${{ steps.item-fields.outputs.Status == 'Todo' }}
         with:
           project-url: https://github.com/users/sorekz/projects/2
           github-token: ${{ secrets.GHPROJECT_SECRET }}
@@ -72,12 +72,16 @@ Write the project item fields to a json file.\
 The json contains more field information. See [JSON File](#json-file)
 
 ## Outputs
-The actions creates an output for each field in the item. All outputs have their original field name in UPPERCASE and with spaces replaced by an underscore.
-Make sure to not use any special characters in your field names.
+The actions creates an output for each field in the item.
 
 Common fields are:
-- **TITLE** The item title
-- **STATUS** The item status
+- **Title** The item title
+- **Status** The item status
+
+If you have spaces or special characters in your field names you can use this syntax:
+```yaml
+if: ${{ steps.item-fields.outputs['123 My field'] == 'Todo' }}
+```
 
 ## JSON File
 ```json

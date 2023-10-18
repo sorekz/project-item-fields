@@ -29900,7 +29900,7 @@ async function run() {
         const fieldValues = await api.readItemFields(itemId);
         core.debug(JSON.stringify(fieldValues));
         for (const field of fieldValues) {
-            const fieldName = field.field.name.toUpperCase().replace(" ", "_");
+            const fieldName = field.field.name;
             if ((0, github_1.isProjectV2ItemFieldTextValue)(field)) {
                 core.setOutput(fieldName, field.text);
             }
@@ -29918,6 +29918,7 @@ async function run() {
             }
         }
         if (jsonFile) {
+            core.debug(`Writing output file ${jsonFile}`);
             fs_1.default.writeFileSync(jsonFile, JSON.stringify(fieldValues, undefined, 4));
         }
     }
@@ -29928,6 +29929,7 @@ async function run() {
     }
 }
 exports.run = run;
+run();
 
 
 /***/ }),

@@ -20,7 +20,7 @@ export async function run(): Promise<void> {
         core.debug(JSON.stringify(fieldValues))
 
         for (const field of fieldValues) {
-            const fieldName = field.field.name.toUpperCase().replace(" ", "_")
+            const fieldName = field.field.name
             if (isProjectV2ItemFieldTextValue(field)) {
                 core.setOutput(fieldName, field.text)
             }
@@ -39,6 +39,7 @@ export async function run(): Promise<void> {
         }
 
         if (jsonFile) {
+            core.debug(`Writing output file ${jsonFile}`)
             fs.writeFileSync(jsonFile, JSON.stringify(fieldValues, undefined, 4))
         }
     } catch (error) {
@@ -47,3 +48,5 @@ export async function run(): Promise<void> {
         }
     }
 }
+
+run()
