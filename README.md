@@ -1,199 +1,144 @@
-# Create a JavaScript Action Using TypeScript
+# project-item-fields
 
-[![GitHub Super-Linter](https://github.com/actions/typescript-action/actions/workflows/linter.yml/badge.svg)](https://github.com/super-linter/super-linter)
-![CI](https://github.com/actions/typescript-action/actions/workflows/ci.yml/badge.svg)
+Read fields from an project (beta) item.
+This action is best used together with [actions/add-to-project](https://github.com/actions/add-to-project)
 
-Use this template to bootstrap the creation of a TypeScript action. :rocket:
-
-This template includes compilation support, tests, a validation workflow,
-publishing, and versioning guidance.
-
-If you are new, there's also a simpler introduction in the
-[Hello world JavaScript action repository](https://github.com/actions/hello-world-javascript-action).
-
-## Create Your Own Action
-
-To create your own action, you can use this repository as a template! Just
-follow the below instructions:
-
-1. Click the **Use this template** button at the top of the repository
-1. Select **Create a new repository**
-1. Select an owner and name for your new repository
-1. Click **Create repository**
-1. Clone your new repository
-
-## Initial Setup
-
-After you've cloned the repository to your local machine or codespace, you'll
-need to perform some initial setup steps before you can develop your action.
-
-> [!NOTE]
->
-> You'll need to have a reasonably modern version of
-> [Node.js](https://nodejs.org) handy. If you are using a version manager like
-> [`nodenv`](https://github.com/nodenv/nodenv) or
-> [`nvm`](https://github.com/nvm-sh/nvm), you can run `nodenv install` in the
-> root of your repository to install the version specified in
-> [`package.json`](./package.json). Otherwise, 20.x or later should work!
-
-1. :hammer_and_wrench: Install the dependencies
-
-   ```bash
-   npm install
-   ```
-
-1. :building_construction: Package the TypeScript for distribution
-
-   ```bash
-   npm run bundle
-   ```
-
-1. :white_check_mark: Run the tests
-
-   ```bash
-   $ npm test
-
-   PASS  ./index.test.js
-     ✓ throws invalid number (3ms)
-     ✓ wait 500 ms (504ms)
-     ✓ test runs (95ms)
-
-   ...
-   ```
-
-## Update the Action Metadata
-
-The [`action.yml`](action.yml) file defines metadata about your action, such as
-input(s) and output(s). For details about this file, see
-[Metadata syntax for GitHub Actions](https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions).
-
-When you copy this repository, update `action.yml` with the name, description,
-inputs, and outputs for your action.
-
-## Update the Action Code
-
-The [`src/`](./src/) directory is the heart of your action! This contains the
-source code that will be run when your action is invoked. You can replace the
-contents of this directory with your own code.
-
-There are a few things to keep in mind when writing your action code:
-
-- Most GitHub Actions toolkit and CI/CD operations are processed asynchronously.
-  In `main.ts`, you will see that the action is run in an `async` function.
-
-  ```javascript
-  import * as core from '@actions/core'
-  //...
-
-  async function run() {
-    try {
-      //...
-    } catch (error) {
-      core.setFailed(error.message)
-    }
-  }
-  ```
-
-  For more information about the GitHub Actions toolkit, see the
-  [documentation](https://github.com/actions/toolkit/blob/master/README.md).
-
-So, what are you waiting for? Go ahead and start customizing your action!
-
-1. Create a new branch
-
-   ```bash
-   git checkout -b releases/v1
-   ```
-
-1. Replace the contents of `src/` with your action code
-1. Add tests to `__tests__/` for your source code
-1. Format, test, and build the action
-
-   ```bash
-   npm run all
-   ```
-
-   > [!WARNING]
-   >
-   > This step is important! It will run [`ncc`](https://github.com/vercel/ncc)
-   > to build the final JavaScript action code with all dependencies included.
-   > If you do not run this step, your action will not work correctly when it is
-   > used in a workflow. This step also includes the `--license` option for
-   > `ncc`, which will create a license file for all of the production node
-   > modules used in your project.
-
-1. Commit your changes
-
-   ```bash
-   git add .
-   git commit -m "My first action is ready!"
-   ```
-
-1. Push them to your repository
-
-   ```bash
-   git push -u origin releases/v1
-   ```
-
-1. Create a pull request and get feedback on your action
-1. Merge the pull request into the `main` branch
-
-Your action is now published! :rocket:
-
-For information about versioning your action, see
-[Versioning](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md)
-in the GitHub Actions toolkit.
-
-## Validate the Action
-
-You can now validate the action by referencing it in a workflow file. For
-example, [`ci.yml`](./.github/workflows/ci.yml) demonstrates how to reference an
-action in the same repository.
-
+## Usage:
+The [actions/add-to-project](https://github.com/actions/add-to-project) can be used to read the item-id of an issue in a project which then is the input into this action.
 ```yaml
-steps:
-  - name: Checkout
-    id: checkout
-    uses: actions/checkout@v3
-
-  - name: Test Local Action
-    id: test-action
-    uses: ./
-    with:
-      milliseconds: 1000
-
-  - name: Print Output
-    id: output
-    run: echo "${{ steps.test-action.outputs.time }}"
+on:
+  issue_comment:
+    types: [created]
+  
+jobs:
+  read_status:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/add-to-project@v0.3.0
+        id: add-project
+        with:
+          project-url: https://github.com/users/sorekz/projects/2
+          github-token: ${{ secrets.GHPROJECT_SECRET }}
+      - uses: sorekz/project-item-fields@v1
+        id: item-fields
+        with:
+          item-id: ${{ steps.add-project.outputs.itemId }}
+          github-token: ${{ secrets.GHPROJECT_SECRET }}
+      - run: echo "Status: ${{ steps.item-fields.outputs.Status }}
 ```
 
-For example workflow runs, check out the
-[Actions tab](https://github.com/actions/typescript-action/actions)! :rocket:
-
-## Usage
-
-After testing, you can create version tag(s) that developers can use to
-reference different stable versions of your action. For more information, see
-[Versioning](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md)
-in the GitHub Actions toolkit.
-
-To include the action in a workflow in another repository, you can use the
-`uses` syntax with the `@` symbol to reference a specific branch, tag, or commit
-hash.
-
+## Adjust fields based on other fields:
+I common use-case is to adjust the fields of a project item only for a certain state of that item.\
+For example: When the issue is commented, move the item to the next status.
 ```yaml
-steps:
-  - name: Checkout
-    id: checkout
-    uses: actions/checkout@v3
+on:
+  issue_comment:
+    types: [created]
+  
+jobs:
+  read_status:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/add-to-project@v0.3.0
+        id: add-project
+        with:
+          project-url: https://github.com/users/sorekz/projects/2
+          github-token: ${{ secrets.GHPROJECT_SECRET }}
+      - uses: sorekz/project-item-fields@v1
+        id: item-fields
+        with:
+          item-id: ${{ steps.add-project.outputs.itemId }}
+          github-token: ${{ secrets.GHPROJECT_SECRET }}
+      # Update the status to "In Progress" when it currently is in "Todo"
+      - uses: sorekz/update-project-fields@v1
+        if: ${{ steps.item-fields.outputs.STATUS == "Todo" }}
+        with:
+          project-url: https://github.com/users/sorekz/projects/2
+          github-token: ${{ secrets.GHPROJECT_SECRET }}
+          item-id: ${{ steps.add-project.outputs.itemId }}
+          field-keys: Status
+          field-values: In Progress
+```
 
-  - name: Test Local Action
-    id: test-action
-    uses: actions/typescript-action@v1 # Commit with the `v1` tag
-    with:
-      milliseconds: 1000
+## Inputs
+### github-token
+**Required** Personal access token to read the project item. Usual permissions required are `project:read`
 
-  - name: Print Output
-    id: output
-    run: echo "${{ steps.test-action.outputs.time }}"
+### item-id
+**Required** The project item
+
+### json
+Write the project item fields to a json file.\
+The json contains more field information. See [JSON File](#json-file)
+
+## Outputs
+The actions creates an output for each field in the item. All outputs have their original field name in UPPERCASE and with spaces replaced by an underscore.
+Make sure to not use any special characters in your field names.
+
+Common fields are:
+- **TITLE** The item title
+- **STATUS** The item status
+
+## JSON File
+```json
+[
+    {
+        "__typename": "ProjectV2ItemFieldTextValue",
+        "field": {
+            "name": "Title"
+        },
+        "text": "Test item"
+    },
+    {
+        "__typename": "ProjectV2ItemFieldSingleSelectValue",
+        "field": {
+            "name": "Status"
+        },
+        "name": "Todo",
+        "nameHTML": "Todo",
+        "color": "GREEN",
+        "optionId": "f75ad846"
+    },
+    {
+        "__typename": "ProjectV2ItemFieldTextValue",
+        "field": {
+            "name": "Test Text"
+        },
+        "text": "Some text"
+    },
+    {
+        "__typename": "ProjectV2ItemFieldNumberValue",
+        "field": {
+            "name": "Test Number"
+        },
+        "number": 42
+    },
+    {
+        "__typename": "ProjectV2ItemFieldDateValue",
+        "field": {
+            "name": "Test Date"
+        },
+        "date": "2023-10-18"
+    },
+    {
+        "__typename": "ProjectV2ItemFieldSingleSelectValue",
+        "field": {
+            "name": "Test_Single_Select"
+        },
+        "name": "Option 2",
+        "nameHTML": "Option 2",
+        "color": "GRAY",
+        "optionId": "ccb3f63d"
+    },
+    {
+        "__typename": "ProjectV2ItemFieldIterationValue",
+        "field": {
+            "name": "Test_Iteration"
+        },
+        "duration": 14,
+        "iterationId": "ceff780a",
+        "title": "Test_Iteration 1",
+        "titleHTML": "Test_Iteration 1"
+    }
+]
 ```

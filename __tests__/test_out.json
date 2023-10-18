@@ -1,0 +1,60 @@
+[
+    {
+        "__typename": "ProjectV2ItemFieldTextValue",
+        "field": {
+            "name": "Title"
+        },
+        "text": "Test item"
+    },
+    {
+        "__typename": "ProjectV2ItemFieldSingleSelectValue",
+        "field": {
+            "name": "Status"
+        },
+        "name": "Todo",
+        "nameHTML": "Todo",
+        "color": "GREEN",
+        "optionId": "f75ad846"
+    },
+    {
+        "__typename": "ProjectV2ItemFieldTextValue",
+        "field": {
+            "name": "Test Text"
+        },
+        "text": "Some text"
+    },
+    {
+        "__typename": "ProjectV2ItemFieldNumberValue",
+        "field": {
+            "name": "Test Number"
+        },
+        "number": 42
+    },
+    {
+        "__typename": "ProjectV2ItemFieldDateValue",
+        "field": {
+            "name": "Test Date"
+        },
+        "date": "2023-10-18"
+    },
+    {
+        "__typename": "ProjectV2ItemFieldSingleSelectValue",
+        "field": {
+            "name": "Test_Single_Select"
+        },
+        "name": "Option 2",
+        "nameHTML": "Option 2",
+        "color": "GRAY",
+        "optionId": "ccb3f63d"
+    },
+    {
+        "__typename": "ProjectV2ItemFieldIterationValue",
+        "field": {
+            "name": "Test_Iteration"
+        },
+        "duration": 14,
+        "iterationId": "ceff780a",
+        "title": "Test_Iteration 1",
+        "titleHTML": "Test_Iteration 1"
+    }
+]
