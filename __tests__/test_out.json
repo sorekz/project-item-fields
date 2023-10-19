@@ -13,7 +13,6 @@
         },
         "name": "Todo",
         "nameHTML": "Todo",
-        "color": "GREEN",
         "optionId": "f75ad846"
     },
     {
@@ -44,7 +43,6 @@
         },
         "name": "Option 2",
         "nameHTML": "Option 2",
-        "color": "GRAY",
         "optionId": "ccb3f63d"
     },
     {

@@ -100,7 +100,6 @@ if: ${{ steps.item-fields.outputs['123 My field'] == 'Todo' }}
         },
         "name": "Todo",
         "nameHTML": "Todo",
-        "color": "GREEN",
         "optionId": "f75ad846"
     },
     {
@@ -131,7 +130,6 @@ if: ${{ steps.item-fields.outputs['123 My field'] == 'Todo' }}
         },
         "name": "Option 2",
         "nameHTML": "Option 2",
-        "color": "GRAY",
         "optionId": "ccb3f63d"
     },
     {

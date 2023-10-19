@@ -29763,8 +29763,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.GithubApi = exports.isProjectV2ItemFieldIterationValue = exports.isProjectV2ItemFieldDateValue = exports.isProjectV2ItemFieldNumberValue = exports.isProjectV2ItemFieldSingleSelectValue = exports.isProjectV2ItemFieldTextValue = void 0;
+exports.GithubApi = exports.isProjectV2ItemFieldIterationValue = exports.isProjectV2ItemFieldDateValue = exports.isProjectV2ItemFieldNumberValue = exports.isProjectV2ItemFieldSingleSelectValue = exports.isProjectV2ItemFieldTextValue = exports.isProjectV2ItemFieldValueCommon = void 0;
 const github = __importStar(__nccwpck_require__(5438));
+function isProjectV2ItemFieldValueCommon(obj) {
+    return "__typename" in obj && "field" in obj && "name" in obj.field;
+}
+exports.isProjectV2ItemFieldValueCommon = isProjectV2ItemFieldValueCommon;
 function isProjectV2ItemFieldTextValue(obj) {
     return obj.__typename == "ProjectV2ItemFieldTextValue";
 }
@@ -29813,7 +29817,6 @@ class GithubApi {
                                         ... on ProjectV2ItemFieldSingleSelectValue {
                                             name
                                             nameHTML
-                                            color
                                             optionId
                                         }
                                         ... on ProjectV2ItemFieldNumberValue {
@@ -29843,7 +29846,11 @@ class GithubApi {
                 cursor
             });
             console.log(JSON.stringify(result));
-            fieldValues.push(...result.node.fieldValues.nodes);
+            for (const node of result.node.fieldValues.nodes) {
+                if (isProjectV2ItemFieldValueCommon(node)) {
+                    fieldValues.push(node);
+                }
+            }
             hasNextPage = result.node.fieldValues.pageInfo.hasNextPage;
             cursor = result.node.fieldValues.pageInfo.endCursor;
         }

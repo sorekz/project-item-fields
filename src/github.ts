@@ -6,6 +6,9 @@ export type ProjectV2ItemFieldValueCommon = {
         name: string
     }
 }
+export function isProjectV2ItemFieldValueCommon(obj: any): obj is ProjectV2ItemFieldValueCommon {
+    return "__typename" in obj && "field" in obj && "name" in obj.field
+}
 export type ProjectV2ItemFieldTextValue = ProjectV2ItemFieldValueCommon & {
     text: string
 }
@@ -54,7 +57,7 @@ export class GithubApi {
             const result = await this.octokit.graphql<{
                 node: {
                     fieldValues: {
-                        nodes: ProjectV2ItemFieldValueCommon[]
+                        nodes: any[]
                         pageInfo: {
                             hasNextPage: boolean
                             endCursor: string
@@ -80,7 +83,6 @@ export class GithubApi {
                                         ... on ProjectV2ItemFieldSingleSelectValue {
                                             name
                                             nameHTML
-                                            color
                                             optionId
                                         }
                                         ... on ProjectV2ItemFieldNumberValue {
@@ -113,7 +115,11 @@ export class GithubApi {
             )
             console.log(JSON.stringify(result))
 
-            fieldValues.push(...result.node.fieldValues.nodes)
+            for(const node of result.node.fieldValues.nodes) {
+                if(isProjectV2ItemFieldValueCommon(node)) {
+                    fieldValues.push(node)
+                }
+            }
 
             hasNextPage = result.node.fieldValues.pageInfo.hasNextPage
             cursor = result.node.fieldValues.pageInfo.endCursor
