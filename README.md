@@ -1,6 +1,6 @@
 # project-item-fields
 
-Read fields from an project (beta) item.
+Read fields from a project (beta) item.
 This action is best used together with [actions/add-to-project](https://github.com/actions/add-to-project)
 
 ## Usage:
@@ -28,7 +28,7 @@ jobs:
 ```
 
 ## Adjust fields based on other fields:
-I common use-case is to adjust the fields of a project item only for a certain state of that item.\
+A common use-case is to adjust the fields of a project item only for a certain state of that item.\
 For example: When the issue is commented, move the item to the next status.
 ```yaml
 on:
